@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MARISA - Manajemen dan Rekomendasi Aset",
+  title: "Asset Management",
 };
 
 export default function RootLayout({
