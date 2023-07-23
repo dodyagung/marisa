@@ -72,19 +72,19 @@ export default function DashboardLayout({
                       className="text-sm text-gray-900 dark:text-white"
                       role="none"
                     >
-                      Neil Sims
+                      Dody
                     </p>
                     <p
                       className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
                       role="none"
                     >
-                      neil.sims@flowbite.com
+                      dody.saputro@jasaraharja.co.id
                     </p>
                   </div>
                   <ul className="py-1" role="none">
                     <li>
                       <Link
-                        href="#"
+                        href="login"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >
