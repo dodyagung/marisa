@@ -1,9 +1,16 @@
 import Dummy from "@/components/dummy";
+import { Metadata } from "next";
 
-export default function User() {
+const PAGE_NAME = "Master User";
+
+export const metadata: Metadata = {
+  title: PAGE_NAME + " - " + process.env.APP_NAME,
+};
+
+export default function Page() {
   return (
     <>
-      <Dummy text="User" />
+      <Dummy text={PAGE_NAME} />
     </>
   );
 }

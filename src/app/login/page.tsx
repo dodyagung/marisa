@@ -1,3 +1,13 @@
+import { Metadata } from "next";
+import Image from "next/image";
+import Logo from "/public/logo.svg";
+
+const PAGE_NAME = "Login";
+
+export const metadata: Metadata = {
+  title: PAGE_NAME + " - " + process.env.APP_NAME,
+};
+
 export default function Page() {
   return (
     <>
@@ -5,11 +15,7 @@ export default function Page() {
         href="#"
         className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
       >
-        <img
-          className="w-8 h-8 mr-2"
-          src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-          alt="logo"
-        />
+        <Image className="w-8 h-8 mr-2" src={Logo} alt="logo" />
         Asset Management
       </a>
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">

@@ -1,9 +1,16 @@
 import Dummy from "@/components/dummy";
+import { Metadata } from "next";
 
-export default function SewaAset() {
+const PAGE_NAME = "Aset Saya";
+
+export const metadata: Metadata = {
+  title: PAGE_NAME + " - " + process.env.APP_NAME,
+};
+
+export default function Page() {
   return (
     <>
-      <Dummy text="Sewa Aset" />
+      <Dummy text={PAGE_NAME} />
     </>
   );
 }

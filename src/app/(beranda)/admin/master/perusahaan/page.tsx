@@ -1,9 +1,16 @@
 import Dummy from "@/components/dummy";
+import { Metadata } from "next";
 
-export default function Perusahaan() {
+const PAGE_NAME = "Master Perusahaan";
+
+export const metadata: Metadata = {
+  title: PAGE_NAME + " - " + process.env.APP_NAME,
+};
+
+export default function Page() {
   return (
     <>
-      <Dummy text="Perusahaan" />
+      <Dummy text={PAGE_NAME} />
     </>
   );
 }
