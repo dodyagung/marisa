@@ -1,7 +1,7 @@
 import Dummy from "@/components/dummy";
 import { Metadata } from "next";
 
-const PAGE_NAME = "Aset Saya";
+const PAGE_NAME = "Sewa Aset";
 
 export const metadata: Metadata = {
   title: PAGE_NAME + " - " + process.env.APP_NAME,
