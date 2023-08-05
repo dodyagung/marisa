@@ -5,6 +5,27 @@ import Image from "next/image";
 import Logo from "/public/logo.png";
 
 const Page: NextPageWithLayout = () => {
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+
+    const response = await fetch(
+      "https://pandawa-api-dev.vercel.app/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: event.target.username.value,
+          password: event.target.password.value,
+        }),
+      }
+    );
+
+    const result = await response.json();
+    alert(`Is this your full name: ${result}`);
+  };
+
   return (
     <>
       <a
@@ -19,7 +40,7 @@ const Page: NextPageWithLayout = () => {
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Login
           </h1>
-          <form className="space-y-4 md:space-y-6">
+          <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="username"
