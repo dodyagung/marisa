@@ -89,7 +89,7 @@ const Page: NextPageWithLayout = () => {
                 required
               />
             </div>
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -114,7 +114,7 @@ const Page: NextPageWithLayout = () => {
               >
                 Lupa password?
               </a>
-            </div>
+            </div> */}
             {isLoading ? (
               <button
                 disabled
@@ -148,7 +148,7 @@ const Page: NextPageWithLayout = () => {
                 Login
               </button>
             )}
-            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+            {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
               Belum punya akun?{" "}
               <a
                 href="#"
@@ -156,7 +156,7 @@ const Page: NextPageWithLayout = () => {
               >
                 Hubungi kami
               </a>
-            </p>
+            </p> */}
           </form>
         </div>
       </div>
