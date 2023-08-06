@@ -2,8 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "/public/logo.png";
 import User from "/public/user.jpg";
+import { parseCookies } from "nookies";
+import jwtDecode, { JwtPayload } from "jwt-decode";
+import { log } from "console";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
+  const [user, setUser]: any = useState({});
+
+  useEffect(() => {
+    const cookie = parseCookies();
+    setUser(jwtDecode<JwtPayload>(cookie.access_token));
+  }, []);
+
   return (
     <>
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -43,7 +54,7 @@ export default function Navbar() {
                 </span>
               </Link>
             </div>
-            {/* <div className="flex items-center">
+            <div className="flex items-center">
               <div className="flex items-center ml-3">
                 <div>
                   <button
@@ -58,7 +69,7 @@ export default function Navbar() {
                       src={User}
                       alt="user photo"
                     />
-                    <span className="px-2.5 py-1.5">Dody</span>
+                    <span className="px-2.5 py-1.5"> {user.name}</span>
                   </button>
                 </div>
                 <div
@@ -70,13 +81,13 @@ export default function Navbar() {
                       className="text-sm text-gray-900 dark:text-white"
                       role="none"
                     >
-                      Dody
+                      {user.name}
                     </p>
                     <p
                       className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
                       role="none"
                     >
-                      dody.saputro@jasaraharja.co.id
+                      {user.email}
                     </p>
                   </div>
                   <ul className="py-1" role="none">
@@ -92,7 +103,7 @@ export default function Navbar() {
                   </ul>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </nav>
