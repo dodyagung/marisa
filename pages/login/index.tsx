@@ -5,6 +5,7 @@ import Image from "next/image";
 import Logo from "/public/logo.png";
 import { setCookie } from "nookies";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const Page: NextPageWithLayout = () => {
   const router = useRouter();
@@ -44,6 +45,9 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
+      <Head>
+        <title>Login - {process.env.NEXT_PUBLIC_APP_NAME}</title>
+      </Head>
       <a
         href="#"
         className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
