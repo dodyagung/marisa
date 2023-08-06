@@ -2,18 +2,27 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "/public/logo.png";
 import User from "/public/user.jpg";
-import { parseCookies } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { log } from "console";
 import { useEffect, useState } from "react";
 
+import { useRouter } from "next/router";
+
 export default function Navbar() {
+  const router = useRouter();
   const [user, setUser]: any = useState({});
 
   useEffect(() => {
     const cookie = parseCookies();
     setUser(jwtDecode<JwtPayload>(cookie.access_token));
   }, []);
+
+  const handleLogout = async (event: any) => {
+    event.preventDefault();
+
+    destroyCookie(null, "access_token");
+    router.push("login");
+  };
 
   return (
     <>
@@ -92,13 +101,13 @@ export default function Navbar() {
                   </div>
                   <ul className="py-1" role="none">
                     <li>
-                      <Link
-                        href="/login"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                      <a
+                        onClick={handleLogout}
+                        className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >
                         Logout
-                      </Link>
+                      </a>
                     </li>
                   </ul>
                 </div>
