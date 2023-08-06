@@ -2,10 +2,16 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import Navbar from "./navbar";
 import Aside from "./aside";
+import { initFlowbite } from "flowbite";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  useEffect(() => {
+    initFlowbite();
+  }, []);
+
   return (
     <>
       <Head>
@@ -21,6 +27,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  useEffect(() => {
+    initFlowbite();
+  }, []);
+
   return (
     <>
       <Head>
