@@ -3,8 +3,11 @@ import { NextPageWithLayout } from "../_app";
 import { AuthLayout } from "@/components/@layout";
 import Image from "next/image";
 import Logo from "/public/logo.png";
+import { setCookie } from "nookies";
+import { useRouter } from "next/router";
 
 const Page: NextPageWithLayout = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: any) => {
@@ -26,10 +29,17 @@ const Page: NextPageWithLayout = () => {
       }
     );
 
-    const result = await response.json();
-    alert(`Is this your full name: ${JSON.stringify(result)}`);
+    if (response.ok) {
+      const data = await response.json();
 
-    setIsLoading(false);
+      setCookie(null, "access_token", data.access_token);
+
+      alert("Login successful");
+      router.push("/");
+    } else {
+      alert("Invalid credentials");
+      setIsLoading(false);
+    }
   };
 
   return (
