@@ -21,7 +21,9 @@ export default function Navbar() {
     event.preventDefault();
 
     destroyCookie(null, "access_token");
-    router.push("login");
+
+    alert("Logout successful");
+    router.push("/login");
   };
 
   return (
@@ -102,7 +104,10 @@ export default function Navbar() {
                   <ul className="py-1" role="none">
                     <li>
                       <a
-                        onClick={handleLogout}
+                        onClick={(e) => {
+                          window.confirm("Are you sure you want to logout?") &&
+                            handleLogout(e);
+                        }}
                         className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >
