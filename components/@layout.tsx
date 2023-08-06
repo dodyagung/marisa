@@ -1,5 +1,7 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
+import Navbar from "./navbar";
+import Aside from "./aside";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +23,14 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <main className={` ${inter.className}`}>{children}</main>
+      <Head>
+        <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
+      </Head>
+      <main className={` ${inter.className}`}>
+        <Navbar />
+        <Aside />
+        {children}
+      </main>
     </>
   );
 };
