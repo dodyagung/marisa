@@ -10,7 +10,7 @@ const Page: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Dashboard - {process.env.NEXT_PUBLIC_APP_NAME}</title>
+        <title>{`Dashboard - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
       </Head>
       <Dummy text="Dashboard" />
     </>

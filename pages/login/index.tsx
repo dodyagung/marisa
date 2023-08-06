@@ -46,7 +46,7 @@ const Page: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Login - {process.env.NEXT_PUBLIC_APP_NAME}</title>
+        <title>{`Login - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
       </Head>
       <a
         href="#"
