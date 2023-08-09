@@ -1,13 +1,10 @@
-import { useState, type ReactElement } from "react";
-import { AuthLayout, DashboardLayout } from "@/components/@layout";
-import Image from "next/image";
-import Logo from "/public/logo.png";
-import { parseCookies, setCookie } from "nookies";
-import { useRouter } from "next/router";
+import { type ReactElement } from "react";
+import { DashboardLayout } from "@/components/@layout";
+
 import Head from "next/head";
-import { NextPageWithLayout } from "../../_app";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps } from "next";
 import nookies from "nookies";
+import { NextPageWithLayout } from "../_app";
 
 type Aset = {
   nama: string;
