@@ -82,8 +82,6 @@ const Page: NextPageWithLayout = ({
     if (response.ok) {
       const data = await response.json();
 
-      console.log(data);
-
       alert(
         "Input data aset berhasil.\n\nKlik OK untuk melanjutkan isi detail aset."
       );

@@ -1,11 +1,13 @@
-import { type ReactElement } from "react";
+import { useEffect, type ReactElement, useState } from "react";
 import { DashboardLayout } from "@/components/@layout";
 
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import nookies from "nookies";
+import nookies, { destroyCookie, parseCookies } from "nookies";
 import { NextPageWithLayout } from "../_app";
 import Link from "next/link";
+import jwtDecode, { JwtPayload } from "jwt-decode";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async (ctx: any) => {
   const cookies = nookies.get(ctx);
@@ -21,6 +23,39 @@ export const getServerSideProps = async (ctx: any) => {
 };
 
 const Page: NextPageWithLayout = ({ data }: any) => {
+  const router = useRouter();
+
+  const handleDelete = async (id: number) => {
+    const cookie = parseCookies();
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/aset/" + id,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + cookie.access_token,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+
+      alert("Delete aset berhasil.");
+      router.reload();
+    } else {
+      if (response.status === 401) {
+        destroyCookie(null, "access_token");
+
+        alert("Session expired, please relogin");
+        router.push("/login");
+      } else {
+        alert(response.statusText);
+      }
+    }
+  };
+
   return (
     <>
       <Head>
@@ -188,7 +223,11 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                           </ul>
                           <div className="py-1">
                             <a
-                              href="#"
+                              onClick={() => {
+                                window.confirm(
+                                  "Are you sure you want to delete?"
+                                ) && handleDelete(aset.aset_id);
+                              }}
                               className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                             >
                               Delete

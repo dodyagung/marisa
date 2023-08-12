@@ -17,9 +17,7 @@ export default function Navbar() {
     setUser(jwtDecode<JwtPayload>(cookie.access_token));
   }, []);
 
-  const handleLogout = async (event: any) => {
-    event.preventDefault();
-
+  const handleLogout = async () => {
     destroyCookie(null, "access_token");
 
     alert("Logout successful");
@@ -104,9 +102,9 @@ export default function Navbar() {
                   <ul className="py-1" role="none">
                     <li>
                       <a
-                        onClick={(e) => {
+                        onClick={() => {
                           window.confirm("Are you sure you want to logout?") &&
-                            handleLogout(e);
+                            handleLogout();
                         }}
                         className="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
