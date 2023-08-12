@@ -15,7 +15,7 @@ type Aset = {
   lokasi: string;
 };
 
-export const getServerSideProps = async (ctx) => {
+export const getServerSideProps = async (ctx: any) => {
   const cookies = nookies.get(ctx);
 
   const res_kategori = await fetch(
