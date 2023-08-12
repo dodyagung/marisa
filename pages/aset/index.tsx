@@ -228,7 +228,7 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                                   "Are you sure you want to delete?"
                                 ) && handleDelete(aset.aset_id);
                               }}
-                              className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                              className="cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                             >
                               Delete
                             </a>
