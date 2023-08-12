@@ -1,10 +1,12 @@
-import { type ReactElement } from "react";
+import { useState, type ReactElement, useEffect } from "react";
 import { DashboardLayout } from "@/components/@layout";
 
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import nookies from "nookies";
+import nookies, { destroyCookie, parseCookies } from "nookies";
 import { NextPageWithLayout } from "../../_app";
+import { useRouter } from "next/router";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 type Aset = {
   nama: string;
@@ -13,22 +15,92 @@ type Aset = {
   lokasi: string;
 };
 
-export const getServerSideProps: GetServerSideProps<{
-  data: Aset;
-}> = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   const cookies = nookies.get(ctx);
 
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/aset", {
-    headers: {
-      Authorization: "Bearer " + cookies.access_token,
-    },
-  });
-  const data = await res.json();
+  const res_kategori = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/kategori",
+    {
+      headers: {
+        Authorization: "Bearer " + cookies.access_token,
+      },
+    }
+  );
+  const data_kategori = await res_kategori.json();
 
-  return { props: { data } };
+  const res_status_okupansi = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/status/okupansi",
+    {
+      headers: {
+        Authorization: "Bearer " + cookies.access_token,
+      },
+    }
+  );
+  const data_status_okupansi = await res_status_okupansi.json();
+
+  return { props: { data_kategori, data_status_okupansi } };
 };
 
-const Page: NextPageWithLayout = ({ data }: any) => {
+const Page: NextPageWithLayout = ({
+  data_kategori,
+  data_status_okupansi,
+}: any) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser]: any = useState({});
+
+  useEffect(() => {
+    const cookie = parseCookies();
+    setUser(jwtDecode<JwtPayload>(cookie.access_token));
+  }, []);
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    const cookie = parseCookies();
+
+    setIsLoading(true);
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/aset/input",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + cookie.access_token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          kategori_id: event.target.category.value,
+          perusahaan_id: user.perusahaan,
+          name: event.target.name.value,
+          created_by: user.id,
+          description: event.target.description.value,
+          kode_occupancy: event.target.occupancy.value,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+
+      console.log(data);
+
+      alert(
+        "Input data aset berhasil.\n\nKlik OK untuk melanjutkan isi detail aset."
+      );
+      router.push("/aset/" + data.identifiers[0].aset_id + "/edit");
+    } else {
+      if (response.status === 401) {
+        destroyCookie(null, "access_token");
+
+        alert("Session expired, please relogin");
+        router.push("/login");
+      } else {
+        alert(response.statusText);
+      }
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -108,7 +180,7 @@ const Page: NextPageWithLayout = ({ data }: any) => {
           <h1 className="mb-4 mt-6 text-2xl font-bold text-gray-900 dark:text-white">
             Input Data Aset
           </h1>
-          <form action="#">
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <div className="sm:col-span-2">
                 <label
@@ -135,29 +207,33 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                 </label>
                 <select
                   id="category"
+                  name="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 >
-                  <option value="TV">TV/Monitors</option>
-                  <option value="PC">PC</option>
-                  <option value="GA">Gaming/Console</option>
-                  <option value="PH">Phones</option>
+                  {data_kategori.map((kategori: any, index: number) => (
+                    <option key={index} value={kategori.kategori_id}>
+                      {kategori.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label
-                  htmlFor="category"
+                  htmlFor="occupancy"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Okupansi
                 </label>
                 <select
-                  id="category"
+                  id="occupancy"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  name="occupancy"
                 >
-                  <option value="TV">TV/Monitors</option>
-                  <option value="PC">PC</option>
-                  <option value="GA">Gaming/Console</option>
-                  <option value="PH">Phones</option>
+                  {data_status_okupansi.map((okupansi: any, index: number) => (
+                    <option key={index} value={okupansi.status_id}>
+                      {okupansi.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="sm:col-span-2">
@@ -169,6 +245,7 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                 </label>
                 <textarea
                   id="description"
+                  name="description"
                   rows={4}
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Masukkan deskripsi aset anda"
@@ -176,12 +253,45 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                 />
               </div>
             </div>
-            <button
+            {/* <button
               type="submit"
               className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
             >
               Simpan
-            </button>
+            </button> */}
+            {isLoading ? (
+              <button
+                disabled
+                type="button"
+                className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+              >
+                <svg
+                  aria-hidden="true"
+                  role="status"
+                  className="inline w-4 h-4 mr-3 text-white animate-spin"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="#E5E7EB"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                Loading...
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+              >
+                Simpan
+              </button>
+            )}
           </form>
         </div>
       </div>

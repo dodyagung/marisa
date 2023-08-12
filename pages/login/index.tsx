@@ -3,7 +3,7 @@ import { NextPageWithLayout } from "../_app";
 import { AuthLayout } from "@/components/@layout";
 import Image from "next/image";
 import Logo from "/public/logo.png";
-import { setCookie } from "nookies";
+import { destroyCookie, setCookie } from "nookies";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -38,7 +38,11 @@ const Page: NextPageWithLayout = () => {
       alert("Login successful");
       router.push("/");
     } else {
-      alert("Invalid credentials");
+      if (response.status === 401) {
+        alert("Wrong username or password");
+      } else {
+        alert(response.statusText);
+      }
       setIsLoading(false);
     }
   };

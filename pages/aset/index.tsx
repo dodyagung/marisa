@@ -151,7 +151,7 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                       <td className="px-4 py-3">{aset.kategori.name}</td>
                       <td className="px-4 py-3">{aset.perusahaan.name}</td>
                       <td className="px-4 py-3">
-                        {aset.aset_detail.detail_alamat}
+                        {aset.aset_detail?.detail_alamat}
                       </td>
                       <td className="px-4 py-3 flex items-center justify-end">
                         <button
