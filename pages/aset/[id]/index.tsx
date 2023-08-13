@@ -7,23 +7,44 @@ import Head from "next/head";
 import { NextPageWithLayout } from "../../_app";
 import nookies, { destroyCookie, parseCookies } from "nookies";
 
+const rupiah = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+};
+
 export const getServerSideProps = async (ctx: any) => {
   const cookies = nookies.get(ctx);
+  const id = ctx.query.id;
 
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_API_URL + "/aset/" + ctx.query.id,
+  const res1 = await fetch(process.env.NEXT_PUBLIC_API_URL + "/aset/" + id, {
+    headers: {
+      Authorization: "Bearer " + cookies.access_token,
+    },
+  });
+  const data1 = await res1.json();
+
+  const res2 = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/aset/detail/" + id,
     {
       headers: {
         Authorization: "Bearer " + cookies.access_token,
       },
     }
   );
-  const data = await res.json();
 
-  return { props: { data } };
+  let data2;
+  if (res2.ok) {
+    data2 = await res2.json();
+  } else {
+    data2 = {};
+  }
+
+  return { props: { data1, data2 } };
 };
 
-const Page: NextPageWithLayout = ({ data }: any) => {
+const Page: NextPageWithLayout = ({ data1, data2 }: any) => {
   return (
     <>
       <Head>
@@ -176,27 +197,19 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Nama
                     </dt>
-                    <dd className="font-semibold">{data.name}</dd>
+                    <dd className="font-semibold">{data1.name}</dd>
                   </div>
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Kategori
                     </dt>
-                    <dd className="font-semibold">{data.kategori.name}</dd>
+                    <dd className="font-semibold">{data1.kategori.name}</dd>
                   </div>
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Perusahaan
                     </dt>
-                    <dd className="font-semibold">{data.perusahaan.name}</dd>
-                  </div>
-                  <div className="flex flex-col pt-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Alamat
-                    </dt>
-                    <dd className="font-semibold">
-                      {data.aset_detail.detail_alamat}
-                    </dd>
+                    <dd className="font-semibold">{data1.perusahaan.name}</dd>
                   </div>
                 </dl>
               </div>
@@ -209,24 +222,74 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                 <dl className="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
                   <div className="flex flex-col pb-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Email address
+                      Alamat
                     </dt>
-                    <dd className="font-semibold">yourname@flowbite.com</dd>
+                    <dd className="font-semibold">
+                      {data2.detail_alamat ?? "-"}
+                    </dd>
                   </div>
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Home address
+                      Kode Pos
+                    </dt>
+                    <dd className="font-semibold">{data2.kode_pos ?? "-"}</dd>
+                  </div>
+
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Luas x Panjang x Lebar
                     </dt>
                     <dd className="font-semibold">
-                      92 Miles Drive, Newark, NJ 07103, California, USA
+                      {data2.luas ?? "-"} x {data2.panjang ?? "-"} x{" "}
+                      {data2.lebar ?? "-"}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Jumlah Lantai
+                    </dt>
+                    <dd className="font-semibold">
+                      {data2.jumlah_lantai ?? "-"}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Nilai Aset Perolehan
+                    </dt>
+                    <dd className="font-semibold">
+                      {rupiah(data2.nilai_aset_perolehan) ?? "-"}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Nilai Aset Sekarang
+                    </dt>
+                    <dd className="font-semibold">
+                      {rupiah(data2.nilai_aset_sekarang) ?? "-"}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Biaya Aset
+                    </dt>
+                    <dd className="font-semibold">
+                      {rupiah(data2.biaya_aset) ?? "-"}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Nilai Depresiasi
+                    </dt>
+                    <dd className="font-semibold">
+                      {rupiah(data2.nilai_depresiasi) ?? "-"}
                     </dd>
                   </div>
                   <div className="flex flex-col pt-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Phone number
+                      Tanggal Perolehan
                     </dt>
                     <dd className="font-semibold">
-                      +00 123 456 789 / +12 345 678
+                      {data2.tgl_perolehan ?? "-"}
                     </dd>
                   </div>
                 </dl>
