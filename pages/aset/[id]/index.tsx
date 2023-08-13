@@ -7,7 +7,7 @@ import Head from "next/head";
 import { NextPageWithLayout } from "../../_app";
 import nookies, { destroyCookie, parseCookies } from "nookies";
 
-const rupiah = (number) => {
+const rupiah = (number: number) => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
