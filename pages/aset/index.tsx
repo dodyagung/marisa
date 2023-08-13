@@ -118,7 +118,8 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                   Menampilkan semua data aset di perusahaan anda
                 </p> */}
               </div>
-              <button
+              <Link
+                href="/aset/input"
                 type="button"
                 className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
               >
@@ -136,7 +137,7 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                   />
                 </svg>
                 Input Data
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -205,24 +206,20 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                             aria-labelledby="apple-imac-27-dropdown-button"
                           >
                             <li>
-                              <a
-                                onClick={(e) => {
-                                  console.log(aset.aset_id);
-
-                                  // router.push("/aset" + aset.aset_id);
-                                }}
-                                className="cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              <Link
+                                href={`/aset/${aset.aset_id}`}
+                                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                               >
                                 Show
-                              </a>
+                              </Link>
                             </li>
                             <li>
-                              <a
-                                href="#"
-                                className="cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                              <Link
+                                href={`/aset/${aset.aset_id}/edit`}
+                                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                               >
                                 Edit
-                              </a>
+                              </Link>
                             </li>
                           </ul>
                           <div className="py-1">
