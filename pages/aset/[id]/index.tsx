@@ -2,10 +2,26 @@ import { useState, type ReactElement } from "react";
 import { AuthLayout, DashboardLayout } from "@/components/@layout";
 import Image from "next/image";
 import Logo from "/public/logo.png";
-import { destroyCookie, setCookie } from "nookies";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { NextPageWithLayout } from "../../_app";
+import nookies, { destroyCookie, parseCookies } from "nookies";
+
+export const getServerSideProps = async (ctx: any) => {
+  const cookies = nookies.get(ctx);
+
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/aset/" + ctx.query.id,
+    {
+      headers: {
+        Authorization: "Bearer " + cookies.access_token,
+      },
+    }
+  );
+  const data = await res.json();
+
+  return { props: { data } };
+};
 
 const Page: NextPageWithLayout = ({ data }: any) => {
   return (
@@ -158,24 +174,28 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                 <dl className="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
                   <div className="flex flex-col pb-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Email address
+                      Nama
                     </dt>
-                    <dd className="font-semibold">yourname@flowbite.com</dd>
+                    <dd className="font-semibold">{data.name}</dd>
                   </div>
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Home address
+                      Kategori
                     </dt>
-                    <dd className="font-semibold">
-                      92 Miles Drive, Newark, NJ 07103, California, USA
-                    </dd>
+                    <dd className="font-semibold">{data.kategori.name}</dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Perusahaan
+                    </dt>
+                    <dd className="font-semibold">{data.perusahaan.name}</dd>
                   </div>
                   <div className="flex flex-col pt-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Phone number
+                      Alamat
                     </dt>
                     <dd className="font-semibold">
-                      +00 123 456 789 / +12 345 678
+                      {data.aset_detail.detail_alamat}
                     </dd>
                   </div>
                 </dl>
