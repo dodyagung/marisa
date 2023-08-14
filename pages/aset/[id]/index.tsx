@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { NextPageWithLayout } from "../../_app";
 import nookies, { destroyCookie, parseCookies } from "nookies";
+import Link from "next/link";
 
 const rupiah = (number: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -61,6 +62,8 @@ export const getServerSideProps = async (ctx: any) => {
 };
 
 const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
+  const router = useRouter();
+
   return (
     <>
       <Head>
@@ -142,12 +145,26 @@ const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
             <div className="mt-2 flex-row items-center justify-between space-y-3 sm:flex sm:space-y-0 sm:space-x-4">
               <div>
                 <h2 className="mr-3 font-semibold text-2xl dark:text-white">
-                  Detail
+                  Detail Aset
                 </h2>
-                {/* <p className="text-gray-500 dark:text-gray-400">
-                    Menampilkan semua data aset di perusahaan anda
-                  </p> */}
               </div>
+              <Link
+                href={`/aset/${router.query.id}/edit`}
+                type="button"
+                className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+              >
+                <svg
+                  className="h-3.5 w-3.5 mr-2"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 18"
+                >
+                  <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z" />
+                  <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z" />
+                </svg>
+                Edit Data
+              </Link>
             </div>
           </div>
 
@@ -222,6 +239,18 @@ const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
                     <dd className="font-semibold">{data1.kategori.name}</dd>
                   </div>
                   <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Okupansi
+                    </dt>
+                    <dd className="font-semibold">{data1.occupancy.name}</dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Deskripsi
+                    </dt>
+                    <dd className="font-semibold">{data1.description}</dd>
+                  </div>
+                  <div className="flex flex-col pt-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Perusahaan
                     </dt>
