@@ -63,8 +63,6 @@ export const getServerSideProps = async (ctx: any) => {
     data2 = [{}];
   }
 
-  console.log(data2);
-
   const res3 = await fetch(
     process.env.NEXT_PUBLIC_API_URL + "/aset/foto/" + id,
     {
@@ -132,6 +130,56 @@ const Page: NextPageWithLayout = ({
       const data = await response.json();
 
       alert("Edit data aset berhasil.");
+      router.push("/aset/" + router.query.id);
+    } else {
+      if (response.status === 401) {
+        destroyCookie(null, "access_token");
+
+        alert("Session expired, please relogin");
+        router.push("/login");
+      } else {
+        alert(response.statusText);
+      }
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmitDetail = async (event: any) => {
+    event.preventDefault();
+    const cookie = parseCookies();
+
+    setIsLoading(true);
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/aset/detail/" + router.query.id,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer " + cookie.access_token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          kode_pos: event.target.kode_pos.value,
+          detail_alamat: event.target.detail_alamat.value,
+          nilai_aset_perolehan: event.target.nilai_aset_perolehan.value,
+          luas: event.target.luas.value,
+          panjang: event.target.panjang.value,
+          lebar: event.target.lebar.value,
+          jumlah_lantai: event.target.jumlah_lantai.value,
+          nilai_aset_sekarang: event.target.nilai_aset_sekarang.value,
+          biaya_aset: event.target.biaya_aset.value,
+          nilai_depresiasi: event.target.nilai_depresiasi.value,
+          tgl_perolehan: event.target.tgl_perolehan.value,
+        }),
+      }
+    );
+
+    console.log(event.target.tgl_perolehan.value);
+
+    if (response.ok) {
+      const data = await response.json();
+
+      alert("Edit data aset detail berhasil.");
       router.push("/aset/" + router.query.id);
     } else {
       if (response.status === 401) {
@@ -438,85 +486,241 @@ const Page: NextPageWithLayout = ({
                 </form>
               </div>
               <div
-                className="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+                className="hidden rounded-lg"
                 id="detail"
                 role="tabpanel"
                 aria-labelledby="detail-tab"
               >
-                <dl className="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
-                  <div className="flex flex-col pb-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Alamat
-                    </dt>
-                    <dd className="font-semibold">
-                      {data2?.detail_alamat ?? "-"}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Kode Pos
-                    </dt>
-                    <dd className="font-semibold">{data2?.kode_pos ?? "-"}</dd>
-                  </div>
+                <form className="mt-8" onSubmit={handleSubmitDetail}>
+                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div className="sm:col-span-2">
+                      <label
+                        htmlFor="detail_alamat"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Alamat
+                      </label>
+                      <textarea
+                        id="detail_alamat"
+                        name="detail_alamat"
+                        rows={4}
+                        className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan alamat"
+                        defaultValue={data2.detail_alamat}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="kode_pos"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Kode Pos
+                      </label>
+                      <input
+                        type="text"
+                        name="kode_pos"
+                        id="kode_pos"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan kode pos"
+                        required
+                        defaultValue={data2.kode_pos}
+                      />
+                    </div>
 
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Luas x Panjang x Lebar
-                    </dt>
-                    <dd className="font-semibold">
-                      {data2?.luas ?? "-"} x {data2?.panjang ?? "-"} x{" "}
-                      {data2?.lebar ?? "-"}
-                    </dd>
+                    <div>
+                      <label
+                        htmlFor="luas"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Luas
+                      </label>
+                      <input
+                        type="text"
+                        name="luas"
+                        id="luas"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan luas"
+                        required
+                        defaultValue={data2.luas}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="panjang"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Panjang
+                      </label>
+                      <input
+                        type="text"
+                        name="panjang"
+                        id="panjang"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan panjang"
+                        required
+                        defaultValue={data2.panjang}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="lebar"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Lebar
+                      </label>
+                      <input
+                        type="text"
+                        name="lebar"
+                        id="lebar"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan lebar"
+                        required
+                        defaultValue={data2.lebar}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="jumlah_lantai"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Jumlah Lantai
+                      </label>
+                      <input
+                        type="text"
+                        name="jumlah_lantai"
+                        id="jumlah_lantai"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan jumlah_lantai"
+                        required
+                        defaultValue={data2.jumlah_lantai}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="nilai_aset_perolehan"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Nilai Aset Perolehan
+                      </label>
+                      <input
+                        type="text"
+                        name="nilai_aset_perolehan"
+                        id="nilai_aset_perolehan"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan nilai_aset_perolehan"
+                        required
+                        defaultValue={data2.nilai_aset_perolehan}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="nilai_aset_sekarang"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Nilai Aset Sekarang
+                      </label>
+                      <input
+                        type="text"
+                        name="nilai_aset_sekarang"
+                        id="nilai_aset_sekarang"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan nilai_aset_sekarang"
+                        required
+                        defaultValue={data2.nilai_aset_sekarang}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="biaya_aset"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Biaya Aset
+                      </label>
+                      <input
+                        type="text"
+                        name="biaya_aset"
+                        id="biaya_aset"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan biaya_aset"
+                        required
+                        defaultValue={data2.biaya_aset}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="nilai_depresiasi"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Nilai Depresiasi
+                      </label>
+                      <input
+                        type="text"
+                        name="nilai_depresiasi"
+                        id="nilai_depresiasi"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan nilai_depresiasi"
+                        required
+                        defaultValue={data2.nilai_depresiasi}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="tgl_perolehan"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Tanggal Perolehan
+                      </label>
+                      <input
+                        type="date"
+                        name="tgl_perolehan"
+                        id="tgl_perolehan"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan tgl_perolehan"
+                        required
+                        defaultValue={data2.tgl_perolehan}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Jumlah Lantai
-                    </dt>
-                    <dd className="font-semibold">
-                      {data2?.jumlah_lantai ?? "-"}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Nilai Aset Perolehan
-                    </dt>
-                    <dd className="font-semibold">
-                      {rupiah(data2?.nilai_aset_perolehan) ?? "-"}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Nilai Aset Sekarang
-                    </dt>
-                    <dd className="font-semibold">
-                      {rupiah(data2?.nilai_aset_sekarang) ?? "-"}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Biaya Aset
-                    </dt>
-                    <dd className="font-semibold">
-                      {rupiah(data2?.biaya_aset) ?? "-"}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col py-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Nilai Depresiasi
-                    </dt>
-                    <dd className="font-semibold">
-                      {rupiah(data2?.nilai_depresiasi) ?? "-"}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col pt-3">
-                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Tanggal Perolehan
-                    </dt>
-                    <dd className="font-semibold">
-                      {data2?.tgl_perolehan ?? "-"}
-                    </dd>
-                  </div>
-                </dl>
+                  {/* <button
+              type="submit"
+              className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+            >
+              Simpan
+            </button> */}
+                  {isLoading ? (
+                    <button
+                      disabled
+                      type="button"
+                      className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        role="status"
+                        className="inline w-4 h-4 mr-3 text-white animate-spin"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="#E5E7EB"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      Loading...
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+                    >
+                      Simpan
+                    </button>
+                  )}
+                </form>
               </div>
               <div
                 className="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"

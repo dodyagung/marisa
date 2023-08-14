@@ -279,14 +279,18 @@ const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
                     </dt>
                     <dd className="font-semibold">{data2.kode_pos ?? "-"}</dd>
                   </div>
-
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
-                      Luas x Panjang x Lebar
+                      Luas
+                    </dt>
+                    <dd className="font-semibold">{data2.luas ?? "-"}</dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Panjang x Lebar
                     </dt>
                     <dd className="font-semibold">
-                      {data2.luas ?? "-"} x {data2.panjang ?? "-"} x{" "}
-                      {data2.lebar ?? "-"}
+                      {data2.panjang ?? "-"} x {data2.lebar ?? "-"}
                     </dd>
                   </div>
                   <div className="flex flex-col py-3">
