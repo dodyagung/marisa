@@ -14,4 +14,11 @@ export function middleware(request: NextRequest) {
 
     return NextResponse.redirect(url);
   }
+
+  if (request.cookies.has("access_token") && pathname.startsWith("/login")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+
+    return NextResponse.redirect(url);
+  }
 }
