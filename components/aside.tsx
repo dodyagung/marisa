@@ -106,7 +106,7 @@ export default function Aside() {
                   </svg>
                   <span className="sr-only">Info</span>
                   <div>
-                    <span className="font-medium">Admin</span> Menu
+                    <span className="font-medium">Checker</span> Menu
                   </div>
                 </div>
               </li>
