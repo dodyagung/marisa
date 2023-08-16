@@ -228,6 +228,12 @@ const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
                 <dl className="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
                   <div className="flex flex-col pb-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
+                      Status
+                    </dt>
+                    <dd className="font-semibold">{data1.status?.name}</dd>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Nama
                     </dt>
                     <dd className="font-semibold">{data1.name}</dd>
