@@ -212,7 +212,7 @@ const Page: NextPageWithLayout = ({
       const data = await response.json();
 
       alert("Delete foto berhasil.");
-      router.reload();
+      router.push("/aset/" + router.query.id + "/edit");
     } else {
       if (response.status === 401) {
         destroyCookie(null, "access_token");
@@ -222,6 +222,46 @@ const Page: NextPageWithLayout = ({
       } else {
         alert(response.statusText);
       }
+    }
+  };
+
+  const handleSubmitFoto = async (event: any) => {
+    event.preventDefault();
+    const cookie = parseCookies();
+
+    setIsLoading(true);
+
+    const formData = new FormData();
+    formData.append("file", event.target.file.files[0]);
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/aset/foto/" + router.query.id,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer " + cookie.access_token,
+        },
+        body: formData,
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+
+      alert("Upload foto berhasil.");
+      setIsLoading(false);
+      event.target.file.value = null;
+      router.push("/aset/" + router.query.id + "/edit");
+    } else {
+      if (response.status === 401) {
+        destroyCookie(null, "access_token");
+
+        alert("Session expired, please relogin");
+        router.push("/login");
+      } else {
+        alert(response.statusText);
+      }
+      setIsLoading(false);
     }
   };
 
@@ -767,7 +807,7 @@ const Page: NextPageWithLayout = ({
                         src={foto.url}
                         alt=""
                       />
-                      <p className="mt-1 cursor-pointer text-xs text-center text-red-500">
+                      <p className="mt-1 mb-3 cursor-pointer text-xs text-center text-red-500">
                         <a
                           onClick={() => {
                             window.confirm(
@@ -782,45 +822,25 @@ const Page: NextPageWithLayout = ({
                   ))}
                 </div>
 
-                <form className="mt-8" onSubmit={handleSubmitDetail}>
+                <form
+                  className="mt-12"
+                  onSubmit={handleSubmitFoto}
+                  encType="multipart/form-data"
+                >
                   <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div>
                       <label
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         htmlFor="user_avatar"
                       >
-                        Upload file
+                        Tambah Foto
                       </label>
                       <input
                         className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                         aria-describedby="user_avatar_help"
                         id="user_avatar"
                         type="file"
-                      />
-                      <div
-                        className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-                        id="user_avatar_help"
-                      >
-                        A profile picture is useful to confirm your are logged
-                        into your account
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="nilai_aset_perolehan"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Nilai Aset Perolehan
-                      </label>
-                      <input
-                        type="text"
-                        name="nilai_aset_perolehan"
-                        id="nilai_aset_perolehan"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Masukkan nilai_aset_perolehan"
-                        required
-                        defaultValue={data2.nilai_aset_perolehan}
+                        name="file"
                       />
                     </div>
                   </div>
@@ -860,7 +880,7 @@ const Page: NextPageWithLayout = ({
                       type="submit"
                       className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
                     >
-                      Simpan
+                      Tambah
                     </button>
                   )}
                 </form>

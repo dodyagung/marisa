@@ -236,13 +236,13 @@ const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Kategori
                     </dt>
-                    <dd className="font-semibold">{data1.kategori.name}</dd>
+                    <dd className="font-semibold">{data1.kategori?.name}</dd>
                   </div>
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Okupansi
                     </dt>
-                    <dd className="font-semibold">{data1.occupancy.name}</dd>
+                    <dd className="font-semibold">{data1.occupancy?.name}</dd>
                   </div>
                   <div className="flex flex-col py-3">
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
@@ -254,7 +254,7 @@ const Page: NextPageWithLayout = ({ data1, data2, data3 }: any) => {
                     <dt className="mb-1 text-gray-500 dark:text-gray-400">
                       Perusahaan
                     </dt>
-                    <dd className="font-semibold">{data1.perusahaan.name}</dd>
+                    <dd className="font-semibold">{data1.perusahaan?.name}</dd>
                   </div>
                 </dl>
               </div>
