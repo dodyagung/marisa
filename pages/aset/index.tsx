@@ -175,8 +175,8 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                       >
                         {aset.name}
                       </th>
-                      <td className="px-4 py-3">{aset.kategori.name}</td>
-                      <td className="px-4 py-3">{aset.perusahaan.name}</td>
+                      <td className="px-4 py-3">{aset.kategori?.name}</td>
+                      <td className="px-4 py-3">{aset.perusahaan?.name}</td>
                       <td className="px-4 py-3">
                         {aset.aset_detail?.detail_alamat}
                       </td>

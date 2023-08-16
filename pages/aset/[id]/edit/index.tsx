@@ -194,6 +194,37 @@ const Page: NextPageWithLayout = ({
     }
   };
 
+  const handleDeleteFoto = async (id: number) => {
+    const cookie = parseCookies();
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/aset/foto/" + id,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + cookie.access_token,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+
+      alert("Delete foto berhasil.");
+      router.reload();
+    } else {
+      if (response.status === 401) {
+        destroyCookie(null, "access_token");
+
+        alert("Session expired, please relogin");
+        router.push("/login");
+      } else {
+        alert(response.statusText);
+      }
+    }
+  };
+
   return (
     <>
       <Head>
@@ -396,7 +427,7 @@ const Page: NextPageWithLayout = ({
                         id="category"
                         name="category"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        defaultValue={data1.kategori.kategori_id}
+                        defaultValue={data1.kategori?.kategori_id}
                       >
                         {data_kategori.map((kategori: any, index: number) => (
                           <option key={index} value={kategori.kategori_id}>
@@ -416,7 +447,7 @@ const Page: NextPageWithLayout = ({
                         id="occupancy"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         name="occupancy"
-                        defaultValue={data1.occupancy.status_id}
+                        defaultValue={data1.occupancy?.status_id}
                       >
                         {data_status_okupansi.map(
                           (okupansi: any, index: number) => (
@@ -723,83 +754,116 @@ const Page: NextPageWithLayout = ({
                 </form>
               </div>
               <div
-                className="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+                className="hidden rounded-lg "
                 id="foto"
                 role="tabpanel"
                 aria-labelledby="foto-tab"
               >
-                <div
-                  id="custom-controls-gallery"
-                  className="relative w-full"
-                  data-carousel="slide"
-                >
-                  {/* Carousel wrapper */}
-                  <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-                    {data3?.map((foto: any, index: number) => (
-                      <div
-                        key={index}
-                        className="hidden duration-700 ease-in-out"
-                        data-carousel-item=""
-                      >
-                        <img
-                          src={foto.url}
-                          className="absolute block max-w-full h-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                          alt=""
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-center items-center pt-4">
-                    <button
-                      type="button"
-                      className="flex justify-center items-center mr-4 h-full cursor-pointer group focus:outline-none"
-                      data-carousel-prev=""
-                    >
-                      <span className="text-gray-400 hover:text-gray-900 dark:hover:text-white group-focus:text-gray-900 dark:group-focus:text-white">
-                        <svg
-                          className="w-5 h-5"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {data3.map((foto: any, index: number) => (
+                    <div key={index}>
+                      <img
+                        className="block max-h-96 h-full w-full rounded-lg object-cover object-center"
+                        src={foto.url}
+                        alt=""
+                      />
+                      <p className="mt-1 cursor-pointer text-xs text-center text-red-500">
+                        <a
+                          onClick={() => {
+                            window.confirm(
+                              "Are you sure you want to delete this photo?"
+                            ) && handleDeleteFoto(foto.aset_foto_id);
+                          }}
                         >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 5H1m0 0 4 4M1 5l4-4"
-                          />
-                        </svg>
-                        <span className="sr-only">Previous</span>
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      className="flex justify-center items-center h-full cursor-pointer group focus:outline-none"
-                      data-carousel-next=""
-                    >
-                      <span className="text-gray-400 hover:text-gray-900 dark:hover:text-white group-focus:text-gray-900 dark:group-focus:text-white">
-                        <svg
-                          className="w-5 h-5"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
-                        <span className="sr-only">Next</span>
-                      </span>
-                    </button>
-                  </div>
+                          Hapus
+                        </a>
+                      </p>
+                    </div>
+                  ))}
                 </div>
+
+                <form className="mt-8" onSubmit={handleSubmitDetail}>
+                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div>
+                      <label
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        htmlFor="user_avatar"
+                      >
+                        Upload file
+                      </label>
+                      <input
+                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        aria-describedby="user_avatar_help"
+                        id="user_avatar"
+                        type="file"
+                      />
+                      <div
+                        className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+                        id="user_avatar_help"
+                      >
+                        A profile picture is useful to confirm your are logged
+                        into your account
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="nilai_aset_perolehan"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Nilai Aset Perolehan
+                      </label>
+                      <input
+                        type="text"
+                        name="nilai_aset_perolehan"
+                        id="nilai_aset_perolehan"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Masukkan nilai_aset_perolehan"
+                        required
+                        defaultValue={data2.nilai_aset_perolehan}
+                      />
+                    </div>
+                  </div>
+                  {/* <button
+              type="submit"
+              className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+            >
+              Simpan
+            </button> */}
+                  {isLoading ? (
+                    <button
+                      disabled
+                      type="button"
+                      className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        role="status"
+                        className="inline w-4 h-4 mr-3 text-white animate-spin"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="#E5E7EB"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      Loading...
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-600 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-700"
+                    >
+                      Simpan
+                    </button>
+                  )}
+                </form>
 
                 {/* <dl className="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
                   <div className="flex flex-col pb-3">
