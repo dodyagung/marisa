@@ -174,6 +174,15 @@ const Page: NextPageWithLayout = ({ data }: any) => {
                         className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                         {aset.name}
+                        <span
+                          className={`${
+                            aset.status?.status_id === 10
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          } text-xs ml-1 px-1 py-0.5 rounded`}
+                        >
+                          {aset.status?.name}
+                        </span>
                       </th>
                       <td className="px-4 py-3">{aset.kategori?.name}</td>
                       <td className="px-4 py-3">{aset.perusahaan?.name}</td>
