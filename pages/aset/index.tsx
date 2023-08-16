@@ -11,12 +11,16 @@ import { useRouter } from "next/router";
 
 export const getServerSideProps = async (ctx: any) => {
   const cookies = nookies.get(ctx);
+  const user = jwtDecode<any>(cookies.access_token);
 
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/aset", {
-    headers: {
-      Authorization: "Bearer " + cookies.access_token,
-    },
-  });
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/aset/perusahaan/" + user.perusahaan,
+    {
+      headers: {
+        Authorization: "Bearer " + cookies.access_token,
+      },
+    }
+  );
   const data = await res.json();
 
   return { props: { data } };
