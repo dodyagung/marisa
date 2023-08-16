@@ -76,7 +76,7 @@ export const getServerSideProps = async (ctx: any) => {
   if (res3.ok) {
     data3 = await res3.json();
   } else {
-    data3 = [{}];
+    data3 = [];
   }
 
   return {
