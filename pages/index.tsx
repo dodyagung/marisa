@@ -163,7 +163,7 @@ const Page: NextPageWithLayout = ({
                 options={dataRekapPerKategori}
                 series={dataRekapPerKategori.series}
                 type="pie"
-                width={360}
+                height={360}
               />
             </div>
           </div>
@@ -177,7 +177,7 @@ const Page: NextPageWithLayout = ({
                 options={dataRekapPerOkupansiJumlah}
                 series={dataRekapPerOkupansiJumlah.series}
                 type="pie"
-                width={360}
+                height={360}
               />
             </div>
           </div>
@@ -191,7 +191,7 @@ const Page: NextPageWithLayout = ({
                 options={dataRekapPerOkupansiRupiah}
                 series={dataRekapPerOkupansiRupiah.series}
                 type="pie"
-                width={360}
+                height={360}
               />
             </div>
           </div>
