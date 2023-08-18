@@ -98,13 +98,13 @@ const Page: NextPageWithLayout = ({
     },
   };
 
-  const dataRekapPerPerusahaan: ApexOptions = {
+  const dataRekapPerPerusahaanRupiah: ApexOptions = {
     theme: {
       palette: "palette3",
     },
     series: [
       {
-        name: "Jumlah",
+        name: "Nilai",
         data: data_rekap_per_perusahaan.map(
           (data: any) => data.total_nilai_aset
         ),
@@ -122,6 +122,24 @@ const Page: NextPageWithLayout = ({
     },
     dataLabels: {
       enabled: false,
+    },
+    legend: {
+      position: "bottom",
+    },
+  };
+
+  const dataRekapPerPerusahaanJumlah: ApexOptions = {
+    theme: {
+      palette: "palette3",
+    },
+    series: [
+      {
+        name: "Jumlah",
+        data: data_rekap_per_perusahaan.map((data: any) => data.jml_aset),
+      },
+    ],
+    xaxis: {
+      categories: data_rekap_per_perusahaan.map((data: any) => data.perusahaan),
     },
     legend: {
       position: "bottom",
@@ -178,7 +196,7 @@ const Page: NextPageWithLayout = ({
             </div>
           </div>
         </div>
-        <div className="grid w-full grid-cols-1 gap-4">
+        <div className="grid mt-4 w-full grid-cols-1 gap-4">
           <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div className="w-full">
               <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
@@ -186,8 +204,24 @@ const Page: NextPageWithLayout = ({
               </h5>
               {/* Line Chart */}
               <ReactApexChart
-                options={dataRekapPerPerusahaan}
-                series={dataRekapPerPerusahaan.series}
+                options={dataRekapPerPerusahaanRupiah}
+                series={dataRekapPerPerusahaanRupiah.series}
+                type="bar"
+                height={400}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="grid mt-4 w-full grid-cols-1 gap-4">
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                Jumlah Aset by Perusahaan
+              </h5>
+              {/* Line Chart */}
+              <ReactApexChart
+                options={dataRekapPerPerusahaanJumlah}
+                series={dataRekapPerPerusahaanJumlah.series}
                 type="bar"
                 height={400}
               />
