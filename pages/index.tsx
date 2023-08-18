@@ -5,18 +5,35 @@ import { NextPageWithLayout } from "./_app";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import nookies from "nookies";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-const Page: NextPageWithLayout = () => {
+export const getServerSideProps = async (ctx: any) => {
+  const cookies = nookies.get(ctx);
+
+  const res_rekap_per_kategori = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/dashboard/rekap-per-kategori",
+    {
+      headers: {
+        Authorization: "Bearer " + cookies.access_token,
+      },
+    }
+  );
+  const data_rekap_per_kategori = await res_rekap_per_kategori.json();
+
+  return { props: { data_rekap_per_kategori } };
+};
+
+const Page: NextPageWithLayout = ({ data_rekap_per_kategori }: any) => {
   const data: ApexOptions = {
     theme: {
       palette: "palette3",
     },
-    series: [1, 8, 1, 1],
-    labels: ["Tanah", "Gedung", "Rumah Dinas", "Ruangan"],
+    series: data_rekap_per_kategori.map((data: any) => data.jml_aset),
+    labels: data_rekap_per_kategori.map((data: any) => data.name),
     legend: {
       position: "bottom",
     },
