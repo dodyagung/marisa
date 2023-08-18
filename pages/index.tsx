@@ -24,16 +24,40 @@ export const getServerSideProps = async (ctx: any) => {
   );
   const data_rekap_per_kategori = await res_rekap_per_kategori.json();
 
-  return { props: { data_rekap_per_kategori } };
+  const res_rekap_per_okupansi = await fetch(
+    process.env.NEXT_PUBLIC_API_URL + "/dashboard/rekap-per-okupansi",
+    {
+      headers: {
+        Authorization: "Bearer " + cookies.access_token,
+      },
+    }
+  );
+  const data_rekap_per_okupansi = await res_rekap_per_okupansi.json();
+
+  return { props: { data_rekap_per_kategori, data_rekap_per_okupansi } };
 };
 
-const Page: NextPageWithLayout = ({ data_rekap_per_kategori }: any) => {
-  const data: ApexOptions = {
+const Page: NextPageWithLayout = ({
+  data_rekap_per_kategori,
+  data_rekap_per_okupansi,
+}: any) => {
+  const dataRekapPerKategori: ApexOptions = {
     theme: {
       palette: "palette3",
     },
     series: data_rekap_per_kategori.map((data: any) => data.jml_aset),
     labels: data_rekap_per_kategori.map((data: any) => data.name),
+    legend: {
+      position: "bottom",
+    },
+  };
+
+  const dataRekapPerOkupansi: ApexOptions = {
+    theme: {
+      palette: "palette3",
+    },
+    series: data_rekap_per_okupansi.map((data: any) => data.jml_aset),
+    labels: data_rekap_per_okupansi.map((data: any) => data.name),
     legend: {
       position: "bottom",
     },
@@ -45,23 +69,231 @@ const Page: NextPageWithLayout = ({ data_rekap_per_kategori }: any) => {
         <title>{`Dashboard - ${process.env.NEXT_PUBLIC_APP_NAME}`}</title>
       </Head>
       <div className="p-6 mt-16 sm:ml-64 bg-gray-50">
-        <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-          <div className="mb-5 flex justify-between items-start w-full">
-            <div className="flex-col items-center">
-              <div className="flex items-center mb-1">
-                <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">
-                  Kategori
-                </h5>
-              </div>
+        <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                Kategori
+              </h5>
+              {/* Line Chart */}
+              <ReactApexChart
+                options={dataRekapPerKategori}
+                series={dataRekapPerKategori.series}
+                type="pie"
+                width={360}
+              />
             </div>
           </div>
-          {/* Line Chart */}
-          <ReactApexChart
-            options={data}
-            series={data.series}
-            type="pie"
-            width={380}
-          />
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h3 className="text-base font-normal text-gray-500 dark:text-gray-400">
+                Users
+              </h3>
+              <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                2,340
+              </span>
+              <p className="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
+                <span className="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z"
+                    />
+                  </svg>
+                  3,4%
+                </span>
+                Since last month
+              </p>
+            </div>
+            <div className="w-full" id="week-signups-chart" />
+          </div>
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                Okupansi
+              </h5>
+              {/* Line Chart */}
+              <ReactApexChart
+                options={dataRekapPerOkupansi}
+                series={dataRekapPerOkupansi.series}
+                type="pie"
+                width={360}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="grid my-4 w-full grid-cols-1 gap-4 lg:grid-cols-4">
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h3 className="text-base font-normal text-gray-500 dark:text-gray-400">
+                New products
+              </h3>
+              <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                2,340
+              </span>
+              <p className="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
+                <span className="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z"
+                    />
+                  </svg>
+                  12.5%
+                </span>
+                Since last month
+              </p>
+            </div>
+            <div className="w-full" id="new-products-chart" />
+          </div>
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h3 className="text-base font-normal text-gray-500 dark:text-gray-400">
+                Users
+              </h3>
+              <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">
+                2,340
+              </span>
+              <p className="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
+                <span className="flex items-center mr-1.5 text-sm text-green-500 dark:text-green-400">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z"
+                    />
+                  </svg>
+                  3,4%
+                </span>
+                Since last month
+              </p>
+            </div>
+            <div className="w-full" id="week-signups-chart" />
+          </div>
+          <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h3 className="mb-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                Audience by age
+              </h3>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  50+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "18%" }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  40+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "15%" }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  30+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "60%" }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  20+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "30%" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div id="traffic-channels-chart" className="w-full" />
+          </div>
+          <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h3 className="mb-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                Audience by age
+              </h3>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  50+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "18%" }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  40+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "15%" }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  30+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "60%" }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center mb-2">
+                <div className="w-16 text-sm font-medium dark:text-white">
+                  20+
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-primary-600 h-2.5 rounded-full dark:bg-primary-500"
+                    style={{ width: "30%" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div id="traffic-channels-chart" className="w-full" />
+          </div>
         </div>
       </div>
     </>
