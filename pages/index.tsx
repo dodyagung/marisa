@@ -9,6 +9,13 @@ import nookies from "nookies";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import highchartsMap from "highcharts/modules/map";
+import Image from "next/image";
+import Rectangle133 from "/public/Rectangle 133.png";
+import Rectangle141 from "/public/Rectangle 141.png";
+import Rectangle144 from "/public/Rectangle 144.png";
+import Rectangle145 from "/public/Rectangle 145.png";
+import Rectangle146 from "/public/Rectangle 146.png";
+import Link from "next/link";
 
 if (typeof Highcharts === "object") {
   highchartsMap(Highcharts);
@@ -297,6 +304,102 @@ const Page: NextPageWithLayout = ({
                 constructorType={"mapChart"}
                 highcharts={Highcharts}
               />
+            </div>
+          </div>
+          <div className="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+            <div className="w-full">
+              <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+                Rekomendasi Pemanfaatan Aset
+              </h5>
+              <div className="mb-4 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <ol className="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
+                  <li>
+                    <Link
+                      href="#"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Image
+                        className="w-12 h-12 mb-3 mr-3 sm:mb-0"
+                        src={Rectangle133}
+                        alt="Jese Leos image"
+                      />
+                      <div className="text-gray-600 dark:text-gray-400">
+                        <div className="text-base font-normal">
+                          Gedung Kantor Pusat Jamkrindo
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Image
+                        className="w-12 h-12 mb-3 mr-3 sm:mb-0"
+                        src={Rectangle141}
+                        alt="Jese Leos image"
+                      />
+                      <div className="text-gray-600 dark:text-gray-400">
+                        <div className="text-base font-normal">
+                          Gedung Kantor Cabang Jasindo
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Image
+                        className="w-12 h-12 mb-3 mr-3 sm:mb-0"
+                        src={Rectangle144}
+                        alt="Jese Leos image"
+                      />
+                      <div className="text-gray-600 dark:text-gray-400">
+                        <div className="text-base font-normal">
+                          Gedung Kantor Pusat Askrindo
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Image
+                        className="w-12 h-12 mb-3 mr-3 sm:mb-0"
+                        src={Rectangle145}
+                        alt="Jese Leos image"
+                      />
+                      <div className="text-gray-600 dark:text-gray-400">
+                        <div className="text-base font-normal">
+                          Rumah Dinas Cabang Jamkrindo
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <Image
+                        className="w-12 h-12 mb-3 mr-3 sm:mb-0"
+                        src={Rectangle146}
+                        alt="Jese Leos image"
+                      />
+                      <div className="text-gray-600 dark:text-gray-400">
+                        <div className="text-base font-normal">
+                          Gudang Jasa Raharja
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
